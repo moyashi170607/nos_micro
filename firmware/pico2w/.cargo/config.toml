@@ -1,0 +1,3 @@
+[build]
+# RP2350 の Cortex-M33 コア向け
+target = "thumbv8m.main-none-eabihf"

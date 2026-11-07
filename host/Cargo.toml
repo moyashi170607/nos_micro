@@ -1,0 +1,6 @@
+[package]
+name = "nos_micro_host"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]

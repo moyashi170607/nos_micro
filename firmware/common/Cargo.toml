@@ -1,0 +1,7 @@
+[package]
+name = "firmware_common"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+embedded-hal = "1.0.0"

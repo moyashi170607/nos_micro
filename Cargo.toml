@@ -1,0 +1,13 @@
+[workspace]
+resolver = "3"
+members = [
+    "host",
+    "nos_micro_core/signer",
+    "nos_micro_core/bridge_protocol",
+    "firmware/common",
+]
+exclude = ["firmware/pico", "firmware/pico2w"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
