@@ -1,7 +1,7 @@
 use nostr::{
     event::{Event, UnsignedEvent},
     key::{Keys, PublicKey, SecretKey},
-    nips::nip44,
+    nips::nip44::{self, Nonce},
 };
 use secp256k1::{All, Secp256k1};
 
@@ -54,5 +54,20 @@ impl Signer {
         }
 
         Ok(nip44::decrypt(self.keys.secret_key(), peer, payload)?)
+    }
+
+    /// `nonce` は毎回TRNGから取得する。再利用してはいけない。
+    pub fn nip44_encrypt(
+        &self,
+        peer: &PublicKey,
+        text: &str,
+        nonce: [u8; 32],
+    ) -> Result<String, Error> {
+        Ok(nip44::encrypt_with_nonce(
+            self.keys.secret_key(),
+            peer,
+            text,
+            Nonce::V2(nonce),
+        )?)
     }
 }
