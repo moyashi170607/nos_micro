@@ -610,6 +610,8 @@ version = "0.1.0"
 dependencies = [
  "nostr",
  "secp256k1",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

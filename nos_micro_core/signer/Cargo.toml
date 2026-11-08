@@ -12,3 +12,5 @@ secp256k1 = { version = "0.30", default-features = false, features = [
     "alloc",
     "lowmemory",
 ] }
+serde = { version = "1.0.229", default-features = false, features = ["alloc", "derive"] }
+serde_json = { version = "1.0.154", default-features = false, features = ["alloc"] }
