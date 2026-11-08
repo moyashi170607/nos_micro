@@ -5,7 +5,7 @@ extern crate alloc;
 pub mod error;
 pub mod signer;
 
-trait RngGenerator {
+pub trait RngGenerator {
     /// 乱数で配列を埋める
     /// 真乱数を用いること
     fn fill(&mut self, dest: &mut [u8]);
