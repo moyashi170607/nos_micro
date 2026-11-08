@@ -2,7 +2,7 @@
 pub enum Error {
     /// Nostr関連のエラー
     Nostr(nostr::error::Error),
-    // serde_json関連のエラー
+    /// serde_json関連のエラー
     Json(serde_json::error::Error),
     /// NIP-44のペイロードが大きすぎる
     PayloadTooLarge,
