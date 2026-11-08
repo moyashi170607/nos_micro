@@ -3,15 +3,12 @@ name = "signer"
 version.workspace = true
 edition.workspace = true
 
-[features]
-default = []
-nostr = ["dep:nostr", "dep:secp256k1"]
-
 [dependencies]
 nostr = { version = "0.45.7", default-features = false, features = [
     "alloc",
     "nip44",
-], optional = true }
+] }
 secp256k1 = { version = "0.30", default-features = false, features = [
+    "alloc",
     "lowmemory",
-], optional = true }
+] }

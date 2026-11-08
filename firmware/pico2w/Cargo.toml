@@ -20,7 +20,7 @@ static_cell = "2.1"
 cyw43 = "0.7"
 cyw43-pio = "0.10"
 
-signer = { path = "../../nos_micro_core/signer", features = ["nostr"] }
+signer = { path = "../../nos_micro_core/signer" }
 
 
 [profile.release]
