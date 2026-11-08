@@ -30,17 +30,21 @@ impl Signer {
         self.keys.public_key()
     }
 
-    pub fn sign(&self, unsingned: UnsignedEvent, aux: &[u8; 32]) -> Result<Event, Error> {
-        let id = unsingned.id.unwrap_or_else(|| unsingned.compute_id());
+    pub fn sign(&self, unsigned: UnsignedEvent, aux: &[u8; 32]) -> Result<Event, Error> {
+        if unsigned.pubkey != self.pubkey() {
+            return Err(Error::InvalidParams);
+        }
+
+        let id = unsigned.id.unwrap_or_else(|| unsigned.compute_id());
         let sig = self
             .keys
             .sign_schnorr_with_aux_rand(&self.secp, id.as_bytes(), aux);
 
         // 署名の検証も行われる
-        Ok(unsingned.add_signature_with_ctx(&self.secp, sig)?)
+        Ok(unsigned.add_signature_with_ctx(&self.secp, sig)?)
     }
 
-    pub fn verify(&self, event: Event) -> Result<(), Error> {
+    pub fn verify(&self, event: &Event) -> Result<(), Error> {
         Ok(event.verify_with_ctx(&self.secp)?)
     }
 
