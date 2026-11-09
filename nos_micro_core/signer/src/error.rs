@@ -14,6 +14,8 @@ pub enum Error {
     Unauthorized,
     /// 未対応のメソッド
     UnsupportedMethod,
+    /// NIP-04には対応していないことを明示
+    Nip04Unsupported,
 }
 
 impl From<nostr::error::Error> for Error {

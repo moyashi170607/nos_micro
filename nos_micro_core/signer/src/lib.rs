@@ -3,6 +3,7 @@
 extern crate alloc;
 
 pub mod error;
+pub mod nip46;
 pub mod signer;
 
 pub trait RngGenerator {
