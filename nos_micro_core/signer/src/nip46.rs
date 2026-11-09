@@ -1,7 +1,7 @@
 use alloc::string::String;
 use alloc::vec::Vec;
 
-use nostr::event::{Kind, Tag, Tags, UnsignedEvent};
+use nostr::event::{Kind, Tags, UnsignedEvent};
 use nostr::key::PublicKey;
 use nostr::types::Timestamp;
 use serde::{Deserialize, Serialize};
@@ -22,7 +22,7 @@ pub enum Request {
     Connect {
         signer_pubkey: PublicKey,
         secret: Option<String>,
-        permision: Vec<Permission>,
+        permissions: Vec<Permission>,
         // 第4引数のmetadataは表示先がないため読まない
     },
     SignEvent(UnsignedEvent),
@@ -112,7 +112,7 @@ impl Request {
             "connect" => Ok(Self::Connect {
                 signer_pubkey: pubkey_param(p, 0)?,
                 secret: p.get(1).filter(|s| !s.is_empty()).cloned(),
-                permision: permission_param(p, 2),
+                permissions: permission_param(p, 2),
                 // 第4引数のmetadataは表示先がないため読まない
             }),
             "sign_event" => {
@@ -143,6 +143,25 @@ impl Request {
             "logout" => Ok(Self::Logout),
             "nip04_encrypt" | "nip04_decrypt" => Err(Error::Nip04Unsupported),
             _ => Err(Error::UnsupportedMethod),
+        }
+    }
+
+    pub fn is_permitted(&self, permissions: &[Permission]) -> bool {
+        match self {
+            Self::SignEvent(event) => permissions.iter().any(|p| match p {
+                Permission::SignEvent(None) => true,
+                Permission::SignEvent(Some(kind)) => *kind == event.kind.as_u16(),
+                _ => false,
+            }),
+
+            Self::Nip44Encrypt { peer, text } => permissions.contains(&Permission::Nip44Encrypt),
+            Self::Nip44Decrypt { peer, payload } => permissions.contains(&Permission::Nip44Decrypt),
+            // 個別の権限は不要。セッションの確認は呼び出し側で行う
+            Self::Connect { .. }
+            | Self::Ping
+            | Self::GetPublicKey
+            | Self::SwitchRelays
+            | Self::Logout => true,
         }
     }
 }
