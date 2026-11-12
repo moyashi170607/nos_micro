@@ -127,7 +127,7 @@ impl Bunker {
         conv_key: ConversationKey,
         signer_pubkey: PublicKey,
         secret: Option<String>,
-        permissions: Vec<Permission>,
+        permissions: Option<Vec<Permission>>,
     ) -> Result<String, Error> {
         if signer_pubkey != self.signer.transport_pubkey() {
             return Err(Error::InvalidParams);
