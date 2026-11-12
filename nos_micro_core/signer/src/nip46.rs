@@ -22,7 +22,8 @@ pub enum Request {
     Connect {
         signer_pubkey: PublicKey,
         secret: Option<String>,
-        permissions: Vec<Permission>,
+        // Noneは指定なし
+        permissions: Option<Vec<Permission>>,
         // 第4引数のmetadataは表示先がないため読まない
     },
     SignEvent(UnsignedEvent),
@@ -96,12 +97,10 @@ fn pubkey_param(p: &[String], i: usize) -> Result<PublicKey, Error> {
 }
 
 /// paramから要求された権限を取り出す
-fn permission_param(p: &[String], i: usize) -> Vec<Permission> {
-    let Some(perms) = p.get(i) else {
-        return Vec::new();
-    };
-
-    perms.split(',').filter_map(Permission::parse).collect()
+/// 指定がない（引数がない・空文字）なら None
+fn permission_param(p: &[String], i: usize) -> Option<Vec<Permission>> {
+    let perms = p.get(i).filter(|s| !s.is_empty())?;
+    Some(perms.split(',').filter_map(Permission::parse).collect())
 }
 
 impl Request {
@@ -154,8 +153,8 @@ impl Request {
                 _ => false,
             }),
 
-            Self::Nip44Encrypt { peer, text } => permissions.contains(&Permission::Nip44Encrypt),
-            Self::Nip44Decrypt { peer, payload } => permissions.contains(&Permission::Nip44Decrypt),
+            Self::Nip44Encrypt { .. } => permissions.contains(&Permission::Nip44Encrypt),
+            Self::Nip44Decrypt { .. } => permissions.contains(&Permission::Nip44Decrypt),
             // 個別の権限は不要。セッションの確認は呼び出し側で行う
             Self::Connect { .. }
             | Self::Ping

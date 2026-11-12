@@ -1,4 +1,5 @@
 use alloc::string::String;
+use alloc::vec;
 use alloc::vec::Vec;
 
 use nostr::event::{Event, Kind};
@@ -143,6 +144,15 @@ impl Bunker {
 
         // 使い捨てにする
         self.secret = None;
+
+        // 権限の指定がなければ、secret を知っていることをユーザーの承認とみなして全部許可する
+        let permissions = permissions.unwrap_or_else(|| {
+            vec![
+                Permission::SignEvent(None),
+                Permission::Nip44Encrypt,
+                Permission::Nip44Decrypt,
+            ]
+        });
 
         self.session.push(Session {
             client,
